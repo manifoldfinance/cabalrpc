@@ -2,9 +2,9 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/manifoldfinance/cabalrpc.svg)](https://pkg.go.dev/github.com/manifoldfinance/cabalrpc)
 
-## Overview 
+## Overview
 
-Kafka-based Ethereum RPC Gateway and mempool service 
+Kafka-based Ethereum RPC Gateway and mempool service
 
 - [Install](#install)
 - [Examples](#examples)
@@ -13,7 +13,7 @@ Kafka-based Ethereum RPC Gateway and mempool service
 
 ### `go mod`
 
-> Requires  go 1.14+
+> Requires go 1.14+
 
 With a [correctly configured](https://golang.org/doc/install#testing) Go toolchain:
 
@@ -26,11 +26,11 @@ go get -u https://github.com/manifoldfinance/cabalrpc
 ```sh
 make all
 ```
+
 ## Usage
 
-  
 | flag                  | type     | description                                                              |
-|-----------------------|----------|--------------------------------------------------------------------------|
+| --------------------- | -------- | ------------------------------------------------------------------------ |
 | --apm-enabled         |          | enable application performance monitoring using elk stack                |
 | --broker-type         | string   | message broker type (nats, kafka) (default "nats")                       |
 | -h,                   | --help   | help for cabalrpc                                                        |
@@ -43,7 +43,6 @@ make all
 | --topic-errors        | string   | topic to use for error handling (default "errors")                       |
 | --topic-rpc-requests  | string   | topic to use for receiving incoming RPC requests (default "rpc.request") |
 | --topic-rpc-responses | string   | topic to use for pushing RPC responses (default "rpc.response")`         |
-
 
 ## Examples
 
@@ -69,17 +68,16 @@ cabalrpc \
 
 ## Application performance monitoring
 
-> Logging, Tracing, Monitoring and Instrumenting 
+> Logging, Tracing, Monitoring and Instrumenting
 
 ### APM Service
-
 
 ```sh
 export ELASTIC_APM_SERVER_URL=https://....apm.europe-west1.gcp.cloud.es.io:443
 export ELASTIC_APM_SECRET_TOKEN=secret
 ```
 
-##### ELK 
+##### ELK
 
 > see `run.sh` in the `bin/` directory
 
@@ -98,15 +96,15 @@ ELASTIC_APM_SERVICE_NAME=cabalrpc cabalrpc \
 ## Roadmap
 
 - Enhance Tracing
-- Logging Service Adapter 
+- Logging Service Adapter
 - Dockerized Container
--  Improve TLS/SSL configuration
--  ELK-stack integration
+- Improve TLS/SSL configuration
+- ELK-stack integration
 
 - Provide examples
--  Provide better documentation
+- Provide better documentation
 - Prometheus Support
-- Grafna Support 
+- Grafna Support
 
 ## License
 
