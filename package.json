@@ -1,6 +1,6 @@
 {
   "name": "cabal-kafkarpc",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "ethereum rpc over kafka",
   "main": "bin/cabalrpc",
   "scripts": {

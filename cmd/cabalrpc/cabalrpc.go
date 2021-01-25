@@ -17,7 +17,7 @@ func main() {
 
 	cmd := &cobra.Command{
 		Use:   "cabalrpc",
-		Short: "cabalrpc provides an Ethereum RPC gateway over message broker systems such as BrokerKafka.",
+		Short: "cabalrpc provides an Ethereum RPC gateway over Kafka.",
 		RunE:  run(&cabalrpcConfig),
 	}
 	cmd.PersistentFlags().StringVar(&cabalrpcConfig.BrokerType, "broker-type", cabalrpcConfig.BrokerType, "message broker type (nats, kafka)")

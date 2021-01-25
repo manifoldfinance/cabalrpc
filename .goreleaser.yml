@@ -1,0 +1,12 @@
+# .goreleaser.yml
+project_name: cabalrpc
+
+# env_files:
+  # use only one or release will fail!
+
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"
+  # Algorithm to be used.
+  # Accepted options are sha256, sha512, sha1, crc32, md5, sha224 and sha384.
+  # Default is sha256.
+  algorithm: sha256

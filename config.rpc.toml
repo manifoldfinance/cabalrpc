@@ -1,0 +1,26 @@
+# cabalrpc.toml configuration file 
+version = 1
+
+[kafka]
+# kafka / nats 
+brokertype = 'string'
+TopicIncomingRpcRequests = 'string'
+TopicIncomingRpcRequests = 'string'
+
+
+[networking]
+# general 
+NatsUrl = 'stirng'
+kafkaurl = 'string'
+httpenabled = 'bool' 
+httpport = 'int' 
+
+
+[metrics]
+# logging and tracing 
+ApmEnabled = 'bool'
+LogLevel = 'flag'
+
+
+
+

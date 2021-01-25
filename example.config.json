@@ -1,0 +1,13 @@
+{
+  "BrokerType": "string",
+  "NatsUrl": "string",
+  "KafkaUrl": "string",
+  "HttpEnabled": "bool",
+  "HttpPort": "int",
+  "RpcUrl": "string",
+  "TopicIncomingRpcRequests": "string",
+  "TopicOutgoingRpcResponses": "string",
+  "TopicErrors": "string",
+  "LogLevel": "LogLevelFlag",
+  "ApmEnabled": "bool"
+}

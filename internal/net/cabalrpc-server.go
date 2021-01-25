@@ -1,10 +1,10 @@
 package net
 
 import (
+	"github.com/gorilla/mux"
 	"github.com/manifoldfinance/cabalrpc/internal/broker"
 	"github.com/manifoldfinance/cabalrpc/internal/config"
 	"github.com/manifoldfinance/cabalrpc/internal/log"
-	"github.com/gorilla/mux"
 	"go.elastic.co/apm/module/apmgorilla"
 	"go.elastic.co/apm/module/apmzap"
 	"go.uber.org/zap"
