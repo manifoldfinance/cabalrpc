@@ -1,11 +1,19 @@
 # Cabalrpc
 
-Cabalrpc provides an Ethereum RPC gateway over Kafka and other messaging systems (e.g. NATS)
+[![Go Reference](https://pkg.go.dev/badge/github.com/manifoldfinance/cabalrpc.svg)](https://pkg.go.dev/github.com/manifoldfinance/cabalrpc)
+
+## Overview 
+
+Kafka-based Ethereum RPC Gateway and mempool service 
 
 - [Install](#install)
 - [Examples](#examples)
 
 ## Install
+
+### `go mod`
+
+> Requires  go 1.14+
 
 With a [correctly configured](https://golang.org/doc/install#testing) Go toolchain:
 
@@ -18,27 +26,24 @@ go get -u https://github.com/manifoldfinance/cabalrpc
 ```sh
 make all
 ```
-
 ## Usage
 
-````
-Usage:
-  cabalrpc [flags]
+  
+| flag                  | type     | description                                                              |
+|-----------------------|----------|--------------------------------------------------------------------------|
+| --apm-enabled         |          | enable application performance monitoring using elk stack                |
+| --broker-type         | string   | message broker type (nats, kafka) (default "nats")                       |
+| -h,                   | --help   | help for cabalrpc                                                        |
+| --http-enabled        |          | start http server for administration                                     |
+| --http-port           | int      | http port (default 8080)                                                 |
+| --kafka-url           | string   | kafka bootstrap server (default "127.0.0.1:9092")                        |
+| --logging             | logLevel | log level (DEBUG, INFO, WARN, ERROR) (default DEBUG)                     |
+| --nats-url            | string   | nats server url (default "nats://127.0.0.1:4222")                        |
+| --rpc-url             | string   | ethereum rpc url (default "http://127.0.0.1:8545")                       |
+| --topic-errors        | string   | topic to use for error handling (default "errors")                       |
+| --topic-rpc-requests  | string   | topic to use for receiving incoming RPC requests (default "rpc.request") |
+| --topic-rpc-responses | string   | topic to use for pushing RPC responses (default "rpc.response")`         |
 
-Flags:
-      --apm-enabled                  enable application performance monitoring using elk stack
-      --broker-type string           message broker type (nats, kafka) (default "nats")
-  -h, --help                         help for cabalrpc
-      --http-enabled                 start http server for administration
-      --http-port int                http port (default 8080)
-      --kafka-url string             kafka bootstrap server (default "127.0.0.1:9092")
-      --logging logLevel             log level (DEBUG, INFO, WARN, ERROR) (default DEBUG)
-      --nats-url string              nats server url (default "nats://127.0.0.1:4222")
-      --rpc-url string               ethereum rpc url (default "http://127.0.0.1:8545")
-      --topic-errors string          topic to use for error handling (default "errors")
-      --topic-rpc-requests string    topic to use for receiving incoming RPC requests (default "rpc.request")
-      --topic-rpc-responses string   topic to use for pushing RPC responses (default "rpc.response")```
-````
 
 ## Examples
 
@@ -64,14 +69,21 @@ cabalrpc \
 
 ## Application performance monitoring
 
-Configure APM server.
+> Logging, Tracing, Monitoring and Instrumenting 
+
+### APM Service
+
 
 ```sh
 export ELASTIC_APM_SERVER_URL=https://....apm.europe-west1.gcp.cloud.es.io:443
 export ELASTIC_APM_SECRET_TOKEN=secret
 ```
 
-```sh
+##### ELK 
+
+> see `run.sh` in the `bin/` directory
+
+```bash
 ELASTIC_APM_SERVICE_NAME=cabalrpc cabalrpc \
 --topic-rpc-requests=ethereum.rpc.requests \
 --topic-rpc-responses=ethereum.rpc.responses \
@@ -85,16 +97,17 @@ ELASTIC_APM_SERVICE_NAME=cabalrpc cabalrpc \
 
 ## Roadmap
 
-- [] Enhance Tracing
-- [] Logging Service Adapter 
-- [] Dockerized Container
-- [] Improve TLS/SSL configuration
-- [] ELK-stack integration
+- Enhance Tracing
+- Logging Service Adapter 
+- Dockerized Container
+-  Improve TLS/SSL configuration
+-  ELK-stack integration
 
-- [] Provide examples
-- [] Provide better documentation
-
+- Provide examples
+-  Provide better documentation
+- Prometheus Support
+- Grafna Support 
 
 ## License
 
-Apache-2.0
+SPDX-License-Idnentifier: Apache-2.0
