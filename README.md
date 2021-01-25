@@ -83,6 +83,18 @@ ELASTIC_APM_SERVICE_NAME=cabalrpc cabalrpc \
 --apm-enabled
 ```
 
+## Roadmap
+
+- [] Enhance Tracing
+- [] Logging Service Adapter 
+- [] Dockerized Container
+- [] Improve TLS/SSL configuration
+- [] ELK-stack integration
+
+- [] Provide examples
+- [] Provide better documentation
+
+
 ## License
 
 Apache-2.0
