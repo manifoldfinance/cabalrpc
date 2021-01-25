@@ -1,7 +1,6 @@
 name: go
 
-on:
-  push: ['*']
+on: ['push']
 
 jobs:
   goreleaser:
