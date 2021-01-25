@@ -1,0 +1,28 @@
+{
+  "name": "cabal-kafkarpc",
+  "version": "0.1.0",
+  "description": "ethereum rpc over kafka",
+  "main": "bin/cabalrpc",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manifoldfinance/cabalrpc.git"
+  },
+  "keywords": [
+    "cabal",
+    "ethereum",
+    "rpc",
+    "json",
+    "rpc",
+    "mempool",
+    "kafka"
+  ],
+  "author": "see contributors",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/manifoldfinance/cabalrpc/issues"
+  },
+  "homepage": "https://github.com/manifoldfinance/cabalrpc#readme"
+}
