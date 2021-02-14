@@ -1,6 +1,10 @@
-# Cabalrpc
+# Cabal RPC
 
+---
 [![Go Reference](https://pkg.go.dev/badge/github.com/manifoldfinance/cabalrpc.svg)](https://pkg.go.dev/github.com/manifoldfinance/cabalrpc)
+![ginkgo](https://github.com/manifoldfinance/cabalrpc/workflows/ginkgo/badge.svg?branch=master)
+![go](https://github.com/manifoldfinance/cabalrpc/workflows/go/badge.svg)
+---
 
 ## Overview
 
