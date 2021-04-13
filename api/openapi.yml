@@ -1,0 +1,678 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: API Reference for the Backbone CabalRPC Gateway
+  description: TODO
+  contact:  contact@manifoldfinance.com
+servers:
+  - url: 'https://{environment_id}-{node_id}.{zone_domain}.backbone.xyz/'
+tags:
+  - name: Smart Contract API
+  - name: Event Streams
+paths:
+  /:
+    post:
+      summary: Webhook for async transactions
+      tags:
+        - Smart Contract API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BackboneWebhookRequest'
+          application/x-yaml:
+            schema:
+              $ref: '#/components/schemas/BackboneWebhookRequest'
+      responses:
+        '200':
+          description: Webhook acknowledgement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneWebhookResponseAck'
+      parameters: []
+  /fasthook:
+    post:
+      summary: Fire & forget webhook
+      description: |
+        Responds as soon as the message is passed to the Kafka client library.
+      tags:
+        - Smart Contract API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BackboneWebhookRequest'
+          application/x-yaml:
+            schema:
+              $ref: '#/components/schemas/BackboneWebhookRequest'
+      responses:
+        '200':
+          description: Webhook acknowledgement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneWebhookResponseFast'
+      parameters: []
+  /hook:
+    post:
+      summary: Kafka acknowledged webhook
+      description: >
+        Waits for an acknowledgment from Kafka that the message has been
+        delivered to a topic partition before responding.
+
+
+        Recommended when reliable transaction delivery is required.
+      tags:
+        - Smart Contract API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BackboneWebhookRequest'
+          application/x-yaml:
+            schema:
+              $ref: '#/components/schemas/BackboneWebhookRequest'
+      responses:
+        '200':
+          description: Webhook acknowledgement (with Kafka ack)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneWebhookResponseAck'
+      parameters: []
+  /abis:
+    post:
+      summary: Add new contract REST API
+      tags:
+        - Smart Contract API
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BackboneNewContractFormData'
+      responses:
+        '200':
+          description: Installed ABI definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneABI'
+      parameters: []
+    get:
+      summary: List contract API
+      description: >
+        List the previously installed ABI definitions with available factory,
+        query & event-subscription API
+      tags:
+        - Smart Contract API
+      responses:
+        '200':
+          description: Installed ABI definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneABIs'
+      parameters: []
+  '/abis/{abi_id}':
+    get:
+      summary: Get contract REST API
+      description: >
+        List details of a single previously installed ABI definitions with a
+        factory, query & event-subscription REST API
+      parameters:
+        - name: abi_id
+          description: The ID of the install ABI
+          in: path
+          schema:
+            type: string
+          required: true
+      tags:
+        - Smart Contract API
+      responses:
+        '200':
+          description: Installed ABI definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneABI'
+  /contracts:
+    get:
+      summary: List contract instance APIs
+      description: |
+        List the previously installed ABI definitions with available API
+      tags:
+        - Smart Contract API
+      responses:
+        '200':
+          description: Installed ABI definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneABIs'
+      parameters: []
+  '/contracts/{contract_address_or_friendly_name}':
+    get:
+      summary: Get contract instance API
+      description: |
+        List the previously installed ABI definitions with available API
+      parameters:
+        - name: contract_address_or_friendly_name
+          description: The ID of the install ABI
+          in: path
+          schema:
+            type: string
+          required: true
+      tags:
+        - Smart Contract API
+      responses:
+        '200':
+          description: Installed ABI definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneABI'
+  /eventstreams:
+    post:
+      summary: Add Event Stream
+      description: |
+        Add a new event stream, to which subscriptions can deliver messages
+      tags:
+        - Event Streams
+      responses:
+        '200':
+          description: Event stream
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneEventStream'
+      parameters: []
+    get:
+      summary: List Event Streams
+      description: |
+        Returns a list of all event streams registered on this node
+      tags:
+        - Event Streams
+      responses:
+        '200':
+          description: Event streams
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneEventStreams'
+      parameters: []
+  '/eventstreams/{stream_id}':
+    get:
+      summary: Get Event Stream
+      description: |
+        Get the details of an individual event stream
+      tags:
+        - Event Streams
+      responses:
+        '200':
+          description: Event streams
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneEventStream'
+      parameters:
+        - $ref: '#/components/parameters/BackboneStreamID'
+    delete:
+      summary: Delete Event Stream
+      description: |
+        Delete an event stream, and any registered subscriptions
+      tags:
+        - Event Streams
+      responses:
+        '204':
+          description: Success
+      parameters:
+        - $ref: '#/components/parameters/BackboneStreamID'
+  '/eventstreams/{stream_id}/suspend':
+    post:
+      summary: Suspend a stream
+      description: >
+        Stops event delivery on an Event Stream, while retaining state of the
+        events delivered so far
+      tags:
+        - Event Streams
+      responses:
+        '204':
+          description: Success
+      parameters:
+        - $ref: '#/components/parameters/BackboneStreamID'
+  '/eventstreams/{stream_id}/resume':
+    post:
+      summary: Resume a stream
+      description: |
+        Resumes delivery on an Event Stream that was previously suspended
+      tags:
+        - Event Streams
+      responses:
+        '204':
+          description: Success
+      parameters:
+        - $ref: '#/components/parameters/BackboneStreamID'
+  /subscriptions:
+    get:
+      summary: List Subscriptions
+      description: |
+        Returns a list of all subscriptions registered on this node
+      tags:
+        - Event Streams
+      responses:
+        '200':
+          description: Subscriptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneSubscriptions'
+      parameters: []
+  '/subscriptions/{subscription_id}':
+    get:
+      summary: Get Subscription
+      description: |
+        Returns details of an individual subscription
+      tags:
+        - Event Streams
+      responses:
+        '200':
+          description: Subscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackboneFullSubscription'
+      parameters:
+        - $ref: '#/components/parameters/BackboneSubscriptionID'
+    delete:
+      summary: Delete Subscription
+      description: |
+        Deletas a subscription
+      tags:
+        - Event Streams
+      responses:
+        '204':
+          description: Success
+      parameters:
+        - $ref: '#/components/parameters/BackboneSubscriptionID'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+    BackboneWebhookRequest:
+      type: object
+      properties:
+        headers:
+          description: >-
+            Headers section used in requests, and extended in asynchronous
+            response messages
+          type: object
+          properties:
+            type:
+              description: The type of action to perform
+              type: string
+              enum:
+                - DeployContract
+                - SendTransaction
+          required:
+            - type
+        from:
+          description: >-
+            The address to use when signing the transaction. Must be a wallet
+            managed by a 3rd party. For example account[0] on the node.
+          type: string
+          pattern: '^(0x)?[0-9a-zA-Z]{40}$'
+        to:
+          description: >-
+            SendTransaction only: The contract address to send the
+            transaction too.
+          type: string
+          pattern: '^(0x)?[0-9a-zA-Z]{40}$'
+        methodName:
+          description: >-
+            SendTransaction only: The method name to invoke on the
+            target contract.
+          type: string
+        params:
+          description: The parameters to pass to the ethereum method or constructor.
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                description: >-
+                  The solidity type of the paramter, such as 'uint256' or
+                  'bytes32'. Supplying this with the simple webhook payload
+                  allows invocation of contracts without requiring a full ABI.
+                type: string
+              value:
+                description: >-
+                  The value to pass to the parameter (optionally supply a number
+                  or boolean rather than a string, depending on the Solidity
+                  type and precision required)
+                type: string
+        soldity:
+          description: 'DeployContract only: Soldity source code to compile.'
+          type: string
+        contractName:
+          description: >-
+            DeployContract only: When there are multiple contracts
+            in the compiler output, this field is required to select the
+            contract to deploy.
+          type: string
+        compilerVersion:
+          description: >-
+            DeployContract only: solc compiler version to use. Only
+            the major version is used in the supplied semver, such as
+            0.4 or 0.5.
+          default: '0.4'
+          type: string
+        compiled:
+          description: >-
+            DeployContract only: Pre-compiled base64 encoded
+            byecode - alternative to supplying Solidity code for compilation.
+          type: string
+          format: byte
+        gas:
+          description: >-
+            The maximum gas the transaction can consume - omit to allow
+            Backbone to perform a gas estimation
+          type: string
+        gasPrice:
+          description: The ETH price offered for gas - omit to use a gas price of zero
+          type: string
+        value:
+          description: An optional ETH value to send along with the tranaction
+          type: string
+        nonce:
+          description: >-
+            Assign an explicit nonce to the transaction - omit to allow
+            Backbone to manage the nonce
+          type: string
+          pattern: '^[0-9]+$'
+        privateFrom:
+          description: >-
+            EEA privacy extensions privateFrom address for private transaction
+            support (Quorum Tessera / PegaSys Orion)
+          type: string
+        privateFor:
+          description: >-
+            EEA privacy extensions privateFor addresses for private transaction
+            support (Quorum Tessera / PegaSys Orion)
+          type: array
+          items:
+            type: string
+      required:
+        - headers
+        - from
+    BackboneWebhookResponseFast:
+      type: object
+      properties:
+        id:
+          description: >-
+            Request identifier to use when querying for transaction results in
+            the receipt store
+          type: string
+        sent:
+          description: >-
+            Whether the request was successfully sent to the Kafka reliable
+            delivery transport - no acknowledgement is obtained
+          type: boolean
+    BackboneWebhookResponseAck:
+      type: object
+      properties:
+        id:
+          description: >-
+            Request identifier to use when querying for transaction results in
+            the receipt store
+          type: string
+        sent:
+          description: >-
+            Whether the request was successfully sent to the Kafka reliable
+            delivery transport - an acknowledgement is received from Kafka
+            before replying
+          type: boolean
+        msg:
+          description: >-
+            Identifier of the Kafka message that has been acknowledged as
+            received by the reliable delivery transport
+          type: string
+    BackboneNewContractFormData:
+      type: object
+      properties:
+        findsolidity:
+          description: >-
+            Discovery mode: If set then the response will be an array of
+            Solidity files found in the supplied files, rather than attempting
+            the compilation (can also be set as a URL query parameter)
+          type: string
+        findcontracts:
+          description: >-
+            Discovery mode: If set then the response will be an array of
+            contract names returned by solc in the compiled output,
+            rather than attempting to install the REST API (can also be set as a
+            URL query parameter)
+          type: string
+        source:
+          description: >-
+            If a zip/tarball is supplied containing multiple solidity files,
+            this field is required to set the Solidity source code file to
+            compile (can also be set as a URL query parameter). Use
+            findsolidity to find possible values.
+          type: string
+        contract:
+          description: >-
+            If the compilation results in multipel contracts, this field is
+            required to set the contract name to use when deploying contracts
+            via the factory methods (can also be set as a URL query parameter).
+            Use findcontracts to find possible values.
+          type: string
+        '*':
+          description: >-
+            Any other properties should be file-content: .sol .zip .tar .tgz
+            .tar.gz .tar.bz2 files are supported
+          type: string
+          format: binary
+    BackboneABI:
+      type: object
+      properties:
+        created:
+          description: The date the ABI was installed into the REST API Gateway
+          type: string
+          format: date-time
+        id:
+          description: The ID of the ABI deployment
+          type: string
+        description:
+          description: >-
+            The description of the ABI extracted from the devdocs of the
+            Solidity
+          type: string
+        path:
+          description: The base path of the ABI resource on the REST API Gateway API
+          type: string
+        deployable:
+          description: >-
+            Whether full bytecode for deployment of the contract has been
+            supplied, so the API can be used as a factory
+          type: boolean
+        openapi:
+          description: >-
+            Full URL to query the OpenAPI 2.0 (Swagger) interface of the REST
+            API generated for the ABI
+          type: boolean
+        compilerVersion:
+          description: The compilerVersion used to compile the ABI and deployable bytecode
+          type: boolean
+    BackboneABIs:
+      type: array
+      items:
+        $ref: '#/components/schemas/BackboneABI'
+    BackboneEventStream:
+      type: object
+      properties:
+        created:
+          description: The date the Event Stream was installed into the REST API Gateway
+          type: string
+          format: date-time
+        id:
+          description: The ID of the Event Stream
+          type: string
+        path:
+          description: The resource path of the Event Stream
+          type: string
+        type:
+          description: The type of event stream
+          type: string
+          enum:
+            - webhook
+        suspended:
+          description: Whether the event stream is currently suspended
+          type: boolean
+        batchSize:
+          description: The number of events to attempt to batch together before delivery
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 1
+        batchTimeoutMS:
+          description: >-
+            The number of milliseoconds to wait to fill the batchSize before
+            delivery
+          type: integer
+          minimum: 0
+          default: 5000
+        retryTimeoutSec:
+          description: >-
+            Amount of time to perform exponential backoff retry for if the
+            endpoint is unable to process a message, before either failing the
+            batch, or entrying blocked state (0 means no backoff retry)
+          type: integer
+          minimum: 0
+          default: 0
+        errorHandling:
+          description: >-
+            Error handling mode defines whether to discard events and move onto
+            the next batch if they cannot be processed after the retryTimeoutSec
+            configured retry interval, or enter a blocked state retrying the
+            batch indefinitely
+          type: string
+          enum:
+            - block
+            - skip
+        blockedReryDelaySec:
+          description: >-
+            If configured to block indefinitely to deliver events, this is the
+            long retry that comes into effect after any exponential backoff
+            retry period
+          type: integer
+          default: 30
+        webhook:
+          description: Configuration options specific to type 'webhook'
+          type: object
+          properties:
+            url:
+              description: The URL to deliver batches to
+              type: string
+            headers:
+              description: 'Custom headers to pass to the URL, such as an API Key'
+              type: object
+            tlsSkipHostVerify:
+              description: >-
+                Set when using TLS encrypted HTTPS connections to invoke a test
+                endpoint, that does not have a verifiable certificate
+                (self-signed, or not matching the hostname in the URL)
+              type: boolean
+            requestTimeoutSec:
+              description: >-
+                Maximum time to allow for the endpoint to respond to each
+                request
+              type: integer
+    BackboneEventStreams:
+      type: array
+      items:
+        $ref: '#/components/schemas/BackboneEventStream'
+    BackboneSubscription:
+      type: object
+      properties:
+        stream:
+          description: >-
+            The ID of the Event Stream to which this Subscription delivers
+            messages
+          type: string
+        fromBlock:
+          description: >-
+            The first block from which to deliver messages - use 'latest' to
+            subscribe from the current block
+          type: string
+    BackboneFullSubscription:
+      allOf:
+        - $ref: '#/components/schemas/BackboneSubscription'
+        - type: object
+          properties:
+            created:
+              description: The date the Subscription was registered in the REST API Gateway
+              type: string
+              format: date-time
+            id:
+              description: The ID of the Subscription
+              type: string
+            path:
+              description: The resource path of the Subscription
+              type: string
+            name:
+              description: >-
+                Descriptive name of the subscription generated from the
+                registered event signature
+                ContractAddr:EventName(type1,type2)
+              type: string
+            stream:
+              description: >-
+                The ID of the Event Stream to which this Subscription delivers
+                messages
+              type: string
+            fromBlock:
+              description: 'The first block from which to generate '
+              type: string
+            filter:
+              description: >-
+                Details of the addresses and topics this filter is registered
+                against
+              type: object
+            event:
+              description: ABI event details
+              type: object
+    BackboneSubscriptions:
+      type: array
+      items:
+        $ref: '#/components/schemas/BackboneFullSubscription'
+  responses:
+    NotFound:
+      description: Application Credential Not Found
+    InternalError:
+      description: Internal Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    BackboneStreamID:
+      name: stream_id
+      description: The ID of the Event Stream
+      in: path
+      required: true
+      schema:
+        type: string
+    BackboneSubscriptionID:
+      name: subscription_id
+      description: The ID of the Subscription
+      in: path
+      required: true
+      schema:
+        type: string
+  links: {}
+  callbacks: {}
+security: []
